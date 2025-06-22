@@ -15,8 +15,11 @@ To build the exported Python package, run maturin from within a new venv as per 
 ```
 python -m venv .venv
 source .venv/bin/activate
+pip install numpy
 maturin develop --release
 ```
+
+Note: we need to make sure `numpy` and other packages are installed in our virtual environment for the test script that depends on them.
 
 To test if the exported `pybevy` python library is accessible, you can run:
 ```python test.py```

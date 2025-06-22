@@ -6,55 +6,56 @@ use pyo3::types::PyDict;
 use bevy::prelude::*;
 use bevy::app::AppExit;
 
+use numpy::{PyArray3, IntoPyArray};
+use pyo3::Python;
+use ndarray::Array3;
+
 use core::{Host, SimulationTime};
 use polio::Immunity;
+use std::sync::{Arc, Mutex};
 
 #[derive(Resource)]
 #[derive(FromPyObject)]
+#[pyo3(from_item_all)]  // Converts all Python dict keys to struct fields
 struct SimParams {
     n_hosts: u32,
     max_days: u32,
     incidence_rate: f32,
     log10_dose: f32,
 }
-impl Default for SimParams {
-    fn default() -> Self {
-        Self {
-            n_hosts: 5,
-            max_days: 5,
-            incidence_rate: 0.03,
-            log10_dose: 6.0,
-        }
-    }
-}
+
+#[derive(Resource, Clone)]
+struct OutputData {
+    arr: Arc<Mutex<Array3<f64>>>,
+}   
 
 /// This function can be called from Python
 #[pyfunction]
-fn run_bevy_app<'py>(data: &Bound<'py, PyDict>) -> PyResult<()> {
+fn run_bevy_app<'py>(py: Python<'py>, data: &Bound<'py, PyDict>) -> PyResult<Bound<'py, PyArray3<f64>>> {
 
-    let mut rust_params_struct = SimParams::default();
+    let sim_params: SimParams = data.extract()?;
 
-    for (key, value) in data.iter() {
-        println!("{}: {} ", key.to_string(), value.to_string());
-        match key.to_string().as_str() {
-            "n_hosts" => rust_params_struct.n_hosts = value.extract::<u32>()?,
-            "max_days" => rust_params_struct.max_days = value.extract::<u32>()?,
-            "incidence_rate" => rust_params_struct.incidence_rate = value.extract::<f32>()?,
-            "log10_dose" => rust_params_struct.log10_dose = value.extract::<f32>()?,
-            _ => println!("Warning: Unknown parameter {}", key.to_string()),
-        }
-    }
+    let output_data = OutputData {
+        arr: Arc::new(Mutex::new(Array3::zeros((
+            sim_params.n_hosts as usize, 
+            sim_params.max_days as usize + 1,
+            2))))
+    };
+    let output_data_clone = output_data.clone();
 
     App::new()
         .add_plugins(MinimalPlugins)
-        .insert_resource(rust_params_struct)
+        .insert_resource(sim_params)
+        .insert_resource(output_data)
         .insert_resource(SimulationTime::default())
         .insert_resource(polio::Params::default())
         .add_systems(Startup, setup)
         .add_systems(Update, (step_loop, exit_system))
         .run();
 
-    Ok(())
+    let arr = output_data_clone.arr.lock().unwrap();
+    let py_array = arr.to_owned().into_pyarray_bound(py);
+    Ok(py_array)
 }
 
 fn setup(
@@ -85,6 +86,7 @@ fn step_loop(
     mut sim_time: ResMut<SimulationTime>,
     polio_params: Res<polio::Params>,
     params: Res<SimParams>,
+    ouput_data: ResMut<OutputData>,
 ) {
         let duration = sim_time.timer.duration();
         sim_time.timer.tick(duration);
@@ -95,6 +97,18 @@ fn step_loop(
         let prob = 1.0 - (-params.incidence_rate).exp();
         let dose = 10f32.powf(params.log10_dose);
         polio::challenge(&mut commands, &mut host_query, &polio_params, &sim_time, prob, dose);
+
+        for (entity, _host, immunity, infection) in host_query.iter_mut() {
+            if sim_time.day < params.max_days {
+                let mut arr = ouput_data.arr.lock().unwrap();
+                arr[[entity.index() as usize, sim_time.day as usize, 0]] = immunity.current_immunity as f64;
+                arr[[entity.index() as usize, sim_time.day as usize, 1]] = if let Some(inf) = infection {
+                    inf.viral_shedding as f64
+                } else {
+                    0.0
+                };
+            }
+        }
 }
 
 /// A Python module implemented in Rust
