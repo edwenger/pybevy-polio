@@ -1,0 +1,24 @@
+[package]
+name = "pybevy"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "pybevy"
+path = "src/lib.rs"
+
+# Uncomment the following lines if you want to create a binary target (but it's getting in way of pyo3/maturin lib build)
+# Probably long term solution is just to have a separate binary crate with its own Cargo.toml
+[[bin]]
+name = "app"
+path = "src/app.rs"
+
+[dependencies]
+bevy = { version = "0.13" } #, default-features = false }  # no need for default features when just building python module (no rendering)
+pyo3 = { version = "0.21", features = ["extension-module", "macros"] }
+bevy_egui = "0.27"
+rand = "0.9"
+rand_distr = "0.5.1"
+
+[package.metadata.pyo3]
+extension-module = true
