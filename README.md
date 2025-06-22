@@ -8,6 +8,8 @@ To launch the interactive demo yourself, run the following from the commandline:
 
 You'll have to have `rustup` installed already.  Instructions [here](https://www.rust-lang.org/learn/get-started).
 
+![Interactive polio within-host model](figs/polio_within_host_visualization_screenshot.png)
+
 To build the exported Python package, run maturin from within a new venv as per [their tutorial](https://www.maturin.rs/tutorial.html#install-and-configure-maturin-in-a-virtual-environment):
 
 ```
