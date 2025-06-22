@@ -4,14 +4,17 @@ A demonstration project to experiment with a few different concepts:
 - exporting Rust functions and modules to Python package with [PyO3](https://pyo3.rs/) and [maturin](https://www.maturin.rs/tutorial.html) (for further integration in tutorial notebooks, calibration workflows, etc.)
 
 To launch the interactive demo yourself, run the following from the commandline:
-> cargo run
+```cargo run```
 
 You'll have to have `rustup` installed already.  Instructions [here](https://www.rust-lang.org/learn/get-started).
 
 To build the exported Python package, run maturin from within a new venv as per [their tutorial](https://www.maturin.rs/tutorial.html#install-and-configure-maturin-in-a-virtual-environment):
-> python -m venv .venv
-> source .venv/bin/activate
-> maturin develop --release
+
+```
+python -m venv .venv
+source .venv/bin/activate
+maturin develop --release
+```
 
 To test if the exported `pybevy` python library is accessible, you can run:
-> python test.py
+```python test.py```
