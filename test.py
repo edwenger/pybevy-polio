@@ -7,10 +7,10 @@ import matplotlib.colors as colors
 import pybevy as pb
 
 sim_params = dict(
-    n_hosts=25,
-    max_days=365,
-    incidence_rate=0.03,
-    log10_dose=8.0,
+    n_hosts=5,
+    max_days=3*365,
+    incidence_rate=0.02,
+    log10_dose=6.0,
 )
 
 data_3d = pb.run_bevy_app(sim_params)  # n_agents, n_days, n_channels, 
