@@ -10,12 +10,12 @@ use core::{SimulationTime, Host};
 
 // Resources
 #[derive(Resource)]
-struct Params {
+struct SimParams {
     incidence_rate: f32, // New infections per SimulationTime.day
     log10_dose: f32, // Log10 of infectious challenge dose
 }
 
-impl Default for Params {
+impl Default for SimParams {
     fn default() -> Self {
         Self {
             incidence_rate: 0.03,
@@ -130,7 +130,11 @@ fn update_time_text(
     text.sections[0].value = format!("t = {}", sim_time.day);
 }
 
-fn simulation_controls_ui(mut contexts: EguiContexts, mut params: ResMut<Params>, mut speed: ResMut<SimulationSpeed>) {
+fn simulation_controls_ui(
+    mut contexts: EguiContexts, 
+    mut params: ResMut<SimParams>, 
+    mut speed: ResMut<SimulationSpeed>
+) {
     egui::Window::new("Simulation Controls")
         .default_pos(egui::pos2(10.0, 50.0))
         .show(contexts.ctx_mut(), |ui| {
@@ -168,7 +172,7 @@ fn step_loop(
     time: Res<Time>,
     speed: Res<SimulationSpeed>,
     polio_params: Res<polio::Params>,
-    params: Res<Params>,
+    params: Res<SimParams>,
 ) {
     sim_time.timer.tick(time.delta().mul_f32(speed.multiplier));
 
@@ -181,7 +185,7 @@ fn step_loop(
             polio::step_state(&mut commands, &mut host_query, &polio_params, &sim_time);
             let prob = 1.0 - (-params.incidence_rate).exp();
             let dose = 10f32.powf(params.log10_dose);
-            polio::challenge(&mut commands, &mut host_query, &polio_params, &sim_time, prob, dose);
+            polio::challenge(&mut commands, &mut host_query, &polio_params, &sim_time, prob, dose, "WPV2");
         }
     }
 }
@@ -260,7 +264,7 @@ fn main() {
 
     App::new()
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
-        .insert_resource(Params::default())
+        .insert_resource(SimParams::default())
         .insert_resource(SimulationTime::default())
         .insert_resource(SimulationSpeed::default())
         .insert_resource(polio::Params::default())

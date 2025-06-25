@@ -11,7 +11,6 @@ use pyo3::Python;
 use ndarray::Array3;
 
 use core::{Host, SimulationTime};
-use polio::Immunity;
 use std::sync::{Arc, Mutex};
 use log::info;
 
@@ -68,7 +67,7 @@ fn setup(
     for _ in 0..params.n_hosts {
         commands.spawn((
             Host{birth_sim_day: 0.0},
-            Immunity::default(),
+            polio::Immunity::default(),
         ));
     }
 }
@@ -99,7 +98,7 @@ fn step_loop(
 
     let prob = 1.0 - (-params.incidence_rate).exp();
     let dose = 10f32.powf(params.log10_dose);
-    polio::challenge(&mut commands, &mut host_query, &polio_params, &sim_time, prob, dose);
+    polio::challenge(&mut commands, &mut host_query, &polio_params, &sim_time, prob, dose, "WPV2");
 
     for (entity, _host, immunity, infection) in host_query.iter_mut() {
         if sim_time.day < params.max_days {
