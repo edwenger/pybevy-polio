@@ -2,6 +2,7 @@
 
 use bevy::prelude::*;
 use rand_distr::{LogNormal, Normal, Distribution};
+use log::{info, debug};
 
 use crate::core::{SimulationTime, Host};
 
@@ -125,7 +126,7 @@ impl Immunity {
         self.postchallenge_peak_immunity = self.prechallenge_immunity * theta_Nabs.max(1.0);  // prevent immunity from decreasing due to challenge
 
         self.current_immunity = self.postchallenge_peak_immunity.max(1.0);
-        println!("  Updated current immunity: {}", self.current_immunity);
+        info!("  Updated current immunity: {}", self.current_immunity);
     }
 }
 
@@ -159,7 +160,7 @@ fn update_shed_duration(immunity: &Immunity, shed_duration_params: &ShedDuration
 
     let log_normal_dist = LogNormal::new(mu, std).unwrap();  // rand_distr::LogNormal expects the mean and standard deviation in log space
     let shed_duration = log_normal_dist.sample(&mut rand::rng());
-    println!("  Updated shed duration: {}", shed_duration);
+    info!("  Updated shed duration: {}", shed_duration);
 
     shed_duration
 }
@@ -184,7 +185,7 @@ pub fn step_state(
 
                 // Clear infections if they are past their shedding duration
                 if t_since_last_exposure > inf.shed_duration {
-                    println!("Clearing infection for host {:?} at day {}", entity, sim_time.day);
+                    info!("Clearing infection for host {:?} at day {}", entity, sim_time.day);
                     commands.entity(entity).remove::<Infection>();
                 } else {
                     // Update viral shedding if still infected
@@ -200,7 +201,7 @@ pub fn step_state(
                     let predicted_concentration = 10f32.powf(log10_peak_cid50) * exponent.exp() / t_since_last_exposure;
                     inf.viral_shedding = predicted_concentration.max(10f32.powf(2.6));  // Set floor on viral shed to be at least 398
 
-                    println!("  Updating viral shedding for host {:?}: {}", entity, inf.viral_shedding);
+                    debug!("  Updating viral shedding for host {:?}: {}", entity, inf.viral_shedding);
                 }
             }
         }
@@ -236,7 +237,7 @@ pub fn challenge(
         if infection.is_none() && rand::random::<f32>() < prob {
 
             // If the host is not already infected, challenge them with a new infection
-            println!("Challenging host {:?} at day {} with dose {}", entity, sim_time.day, dose);
+            info!("Challenging host {:?} at day {} with dose {}", entity, sim_time.day, dose);
 
             let alpha = params.p_transmit.alpha;
             let gamma = params.p_transmit.gamma;
@@ -246,7 +247,7 @@ pub fn challenge(
 
             if rand::random::<f32>() < p_transmit {
                 // Insert an Infection component initialized according to SimulationTime and host Immunity
-                println!("Spawning infection for host {:?} at day {}", entity, sim_time.day);
+                info!("Spawning infection for host {:?} at day {}", entity, sim_time.day);
                 commands.entity(entity).insert(Infection::set_prognoses(&mut immunity, sim_time, params));
             }
         }

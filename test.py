@@ -27,7 +27,7 @@ data_xr = xr.DataArray(data_3d, coords={
     "channel": channel_coords,
 }, dims=dims)
 
-print(data_xr)
+# print(data_xr)
 
 fig, axs = plt.subplots(1, 2, figsize=(10, 5), sharex=True, sharey=True)
 data_xr.sel(channel='current_immunity').plot(norm=colors.LogNorm(vmin=1, vmax=1e6), ax=axs[0])

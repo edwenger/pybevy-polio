@@ -28,3 +28,12 @@ And look at time-series outputs for different longitudinal challenge scenarios l
 
 ![Time series of successive infectious challenge dosing](figs/pybevy-polio-challenge-timeseries.png)
 ![Heat maps of successive infectious challenge dosing](figs/pybevy-polio-challenge-heatmap.png)
+
+To enable info-level logging, one can set environment variable like this:
+```
+RUST_LOG=info cargo run
+```
+or 
+```
+RUST_LOG=info python test.py
+```

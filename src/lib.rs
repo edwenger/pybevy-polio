@@ -13,6 +13,7 @@ use ndarray::Array3;
 use core::{Host, SimulationTime};
 use polio::Immunity;
 use std::sync::{Arc, Mutex};
+use log::info;
 
 #[derive(Resource)]
 #[derive(FromPyObject)]
@@ -42,6 +43,8 @@ fn run_bevy_app<'py>(py: Python<'py>, data: &Bound<'py, PyDict>) -> PyResult<Bou
             2))))
     };
     let output_data_clone = output_data.clone();
+
+    env_logger::init();
 
     App::new()
         .add_plugins(MinimalPlugins)
@@ -88,27 +91,27 @@ fn step_loop(
     params: Res<SimParams>,
     ouput_data: ResMut<OutputData>,
 ) {
-        let duration = sim_time.timer.duration();
-        sim_time.timer.tick(duration);
-        sim_time.day += 1;
-        println!("...Advancing to day {}", sim_time.day);
-        polio::step_state(&mut commands, &mut host_query, &polio_params, &sim_time);
+    let duration = sim_time.timer.duration();
+    sim_time.timer.tick(duration);
+    sim_time.day += 1;
+    info!("...Advancing to day {}", sim_time.day);
+    polio::step_state(&mut commands, &mut host_query, &polio_params, &sim_time);
 
-        let prob = 1.0 - (-params.incidence_rate).exp();
-        let dose = 10f32.powf(params.log10_dose);
-        polio::challenge(&mut commands, &mut host_query, &polio_params, &sim_time, prob, dose);
+    let prob = 1.0 - (-params.incidence_rate).exp();
+    let dose = 10f32.powf(params.log10_dose);
+    polio::challenge(&mut commands, &mut host_query, &polio_params, &sim_time, prob, dose);
 
-        for (entity, _host, immunity, infection) in host_query.iter_mut() {
-            if sim_time.day < params.max_days {
-                let mut arr = ouput_data.arr.lock().unwrap();
-                arr[[entity.index() as usize, sim_time.day as usize, 0]] = immunity.current_immunity as f64;
-                arr[[entity.index() as usize, sim_time.day as usize, 1]] = if let Some(inf) = infection {
-                    inf.viral_shedding as f64
-                } else {
-                    0.0
-                };
-            }
+    for (entity, _host, immunity, infection) in host_query.iter_mut() {
+        if sim_time.day < params.max_days {
+            let mut arr = ouput_data.arr.lock().unwrap();
+            arr[[entity.index() as usize, sim_time.day as usize, 0]] = immunity.current_immunity as f64;
+            arr[[entity.index() as usize, sim_time.day as usize, 1]] = if let Some(inf) = infection {
+                inf.viral_shedding as f64
+            } else {
+                0.0
+            };
         }
+    }
 }
 
 /// A Python module implemented in Rust

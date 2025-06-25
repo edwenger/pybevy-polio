@@ -4,6 +4,7 @@ mod polio;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
+use log::{info, debug};
 
 use core::{SimulationTime, Host};
 
@@ -172,16 +173,12 @@ fn step_loop(
     sim_time.timer.tick(time.delta().mul_f32(speed.multiplier));
 
     if sim_time.timer.just_finished() {
-
-        println!("Stepping simulation state from day {}: {} finished this tick", sim_time.day, sim_time.timer.times_finished_this_tick());
-
+        info!("Stepping simulation state from day {}: {} finished this tick", sim_time.day, sim_time.timer.times_finished_this_tick());
         // For large visualization speed multipliers, the timer may have finished multiple times per tick
         for _ in 0..sim_time.timer.times_finished_this_tick() {
             sim_time.day += 1;
-            println!("...Advancing to day {}", sim_time.day);
-
+            debug!("...Advancing to day {}", sim_time.day);
             polio::step_state(&mut commands, &mut host_query, &polio_params, &sim_time);
-
             let prob = 1.0 - (-params.incidence_rate).exp();
             let dose = 10f32.powf(params.log10_dose);
             polio::challenge(&mut commands, &mut host_query, &polio_params, &sim_time, prob, dose);
@@ -259,6 +256,7 @@ fn remove_shedding_scales(
 
 // App entry point
 fn main() {
+    env_logger::init();
 
     App::new()
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
