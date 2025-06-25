@@ -23,3 +23,8 @@ Note: we need to make sure `numpy` and other packages are installed in our virtu
 
 To test if the exported `pybevy` python library is accessible, you can run:
 ```python test.py```
+
+And look at time-series outputs for different longitudinal challenge scenarios like below:
+
+![Time series of successive infectious challenge dosing](figs/pybevy-polio-challenge-timeseries.png)
+![Heat maps of successive infectious challenge dosing](figs/pybevy-polio-challenge-heatmap.png)
