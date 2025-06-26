@@ -1,0 +1,44 @@
+{
+    "name": "PyBevy Polio Dev Container",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "features": {
+        "ghcr.io/devcontainers/features/rust:1": {
+            "version": "latest",
+            "profile": "default"
+        },
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.11"
+        }
+    },
+    "postCreateCommand": "bash .devcontainer/setup.sh",
+    "customizations": {
+        "codespaces": {
+            "openFiles": [
+                "README.md",
+                "CLAUDE.md"
+            ]
+        },
+        "vscode": {
+            "extensions": [
+                "rust-lang.rust-analyzer",
+                "ms-python.python",
+                "ms-python.black-formatter",
+                "ms-toolsai.jupyter",
+                "ms-toolsai.jupyter-renderers",
+                "vadimcn.vscode-lldb"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
+                "rust-analyzer.cargo.buildScripts.enable": true,
+                "rust-analyzer.procMacro.enable": true
+            }
+        }
+    },
+    "forwardPorts": [8080],
+    "portsAttributes": {
+        "8080": {
+            "label": "Bevy App",
+            "onAutoForward": "notify"
+        }
+    }
+}
