@@ -20,6 +20,13 @@ You'll have to have `rustup` installed already.  Instructions [here](https://www
 
 ![Interactive polio within-host model](figs/polio_within_host_visualization_screenshot.png)
 
+## Web Application (WASM)
+To run the simulation in your web browser:
+```bash
+cd app && trunk serve --open
+```
+Visit `http://localhost:8080` for the same interactive visualization with real-time parameter controls. Requires [trunk](https://trunkrs.dev/) for WASM deployment (install with `cargo install trunk`).
+
 ## Python Package Development
 
 ### In Codespaces

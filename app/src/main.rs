@@ -45,7 +45,7 @@ struct SheddingScale;
 // Systems
 fn setup(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
+    _asset_server: Res<AssetServer>,
     query: Query<&Window, With<PrimaryWindow>>, // Query for the primary window
     ) {
 
@@ -97,7 +97,7 @@ fn setup(
             text: Text::from_section(
                 "t = 0",
                 TextStyle {
-                    font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                    font: default(),
                     font_size: 30.0,
                     color: Color::WHITE,
                 },

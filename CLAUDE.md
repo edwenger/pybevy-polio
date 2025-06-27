@@ -76,6 +76,58 @@ cd app && cargo build --release
 cargo clean
 ```
 
+### WebAssembly (WASM) Deployment
+The interactive visualization can be deployed to the web using WebAssembly:
+
+```bash
+# Install trunk (WASM build tool) - one time setup
+cargo install trunk
+
+# Add WASM target - one time setup  
+rustup target add wasm32-unknown-unknown
+
+# Build for web deployment
+cd app && trunk build
+
+# Serve locally for development (opens browser automatically)
+cd app && trunk serve --open
+
+# Build for production deployment
+cd app && trunk build --release
+```
+
+### Running the Web Application
+```bash
+# Launch the web app (builds and serves automatically)
+cd app && trunk serve --open
+
+# Or serve without opening browser
+cd app && trunk serve
+
+# Then visit http://localhost:8080 in your browser
+```
+
+**What you'll see in the browser:**
+- Interactive polio simulation with host immunity visualization (blue bars)
+- Viral shedding display (red bars when infected)
+- Real-time simulation time counter "t = {days}" in top-left
+- Parameter controls via egui window:
+  - Simulation speed multiplier (0.5x - 30x)
+  - Incidence rate slider (0.0 - 0.2)
+  - Challenge dose slider (4.0 - 8.0 log10)
+
+**WASM Configuration Notes:**
+- Uses custom `.cargo/config.toml` with `getrandom_backend="wasm_js"` and `web_sys_unstable_apis` flags
+- Bevy configured with minimal feature set for web compatibility (`webgl2`, no native features)
+- bevy_egui clipboard features disabled to avoid unstable web API conflicts
+- getrandom and uuid configured with WASM-compatible features (`wasm_js`, `js`)
+- Served application available at `http://localhost:8080` when using trunk serve
+
+**Files for WASM deployment:**
+- `app/index.html`: HTML template for web deployment
+- `app/Trunk.toml`: Trunk configuration file
+- `app/.cargo/config.toml`: WASM-specific build flags
+
 ## Key Integration Points
 
 ### PyO3 Export Function

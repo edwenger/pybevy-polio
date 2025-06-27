@@ -8,3 +8,6 @@ bevy = { version = "0.13", default-features = false}
 rand = "0.9"
 rand_distr = "0.5.1"
 log = "0.4"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }

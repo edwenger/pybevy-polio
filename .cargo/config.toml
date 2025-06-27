@@ -1,7 +1,12 @@
-[target.wasm32-unknown-unknown]
-runner = "wasm-server-runner"
+# Enable a small amount of optimization in debug mode
+[profile.dev]
+opt-level = 1
 
-# macOS-specific flags for PyO3 (if needed in future)
+# Enable high optimizations for dependencies (incl. Bevy), but not for our code:
+[profile.dev.package."*"]
+opt-level = 3
+
+# Mac linking configuration
 [target.x86_64-apple-darwin]
 rustflags = [
     "-C", "link-arg=-undefined",
@@ -13,3 +18,7 @@ rustflags = [
     "-C", "link-arg=-undefined",
     "-C", "link-arg=dynamic_lookup"
 ]
+
+# WASM configuration
+[target.wasm32-unknown-unknown]
+rustflags = ["--cfg", "getrandom_backend=\"wasm_js\"", "--cfg=web_sys_unstable_apis"]

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyBevy Polio Simulation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        canvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            max-height: 100vh;
+        }
+        
+        .info {
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+        }
+        
+        .loading {
+            margin: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h1>PyBevy Polio Within-Host Disease Model</h1>
+        <p>Interactive visualization of polio transmission and immunity dynamics using Bevy ECS.</p>
+        <p class="loading">Loading simulation...</p>
+    </div>
+    
+    <script>
+        // Simple loading feedback
+        window.addEventListener('load', function() {
+            const loading = document.querySelector('.loading');
+            if (loading) {
+                loading.textContent = 'Simulation loaded! Use the controls to interact with the model.';
+            }
+        });
+    </script>
+</body>
+</html>
