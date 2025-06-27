@@ -1,12 +1,14 @@
 [target.wasm32-unknown-unknown]
 runner = "wasm-server-runner"
 
-# Linux-specific flags for PyO3 shared library compilation
-[target.x86_64-unknown-linux-gnu]
-rustflags = ["-C", "relocation-model=pic"]
-
 # macOS-specific flags for PyO3 (if needed in future)
 [target.x86_64-apple-darwin]
+rustflags = [
+    "-C", "link-arg=-undefined",
+    "-C", "link-arg=dynamic_lookup"
+]
+
+[target.aarch64-apple-darwin]
 rustflags = [
     "-C", "link-arg=-undefined",
     "-C", "link-arg=dynamic_lookup"
