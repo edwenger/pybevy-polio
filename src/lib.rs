@@ -1,6 +1,3 @@
-mod core;
-mod polio;
-
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use bevy::prelude::*;
@@ -10,7 +7,7 @@ use numpy::{PyArray3, IntoPyArray};
 use pyo3::Python;
 use ndarray::Array3;
 
-use core::{Host, SimulationTime};
+use model::{Host, SimulationTime, polio};
 use std::sync::{Arc, Mutex};
 use log::info;
 

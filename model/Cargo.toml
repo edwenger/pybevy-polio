@@ -1,0 +1,10 @@
+[package]
+name = "model"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = { version = "0.13", default-features = false}
+rand = "0.9"
+rand_distr = "0.5.1"
+log = "0.4"

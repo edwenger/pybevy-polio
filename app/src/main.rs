@@ -1,12 +1,9 @@
-mod core;
-mod polio;
-
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
 use log::{info, debug};
 
-use core::{SimulationTime, Host};
+use model::{SimulationTime, Host, polio};
 
 // Resources
 #[derive(Resource)]

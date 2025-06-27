@@ -1,0 +1,13 @@
+[package]
+name = "pybevy-app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = { version = "0.13", default-features = true }
+bevy_egui = "0.27"
+log = "0.4"
+env_logger = "0.11"
+
+# Reference to the shared model crate
+model = { path = "../model" }

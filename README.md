@@ -14,7 +14,7 @@ Click the "Open in GitHub Codespaces" badge above for pre-configured development
 
 ### Option 2: Local Development
 To launch the interactive demo yourself, run the following from the commandline:
-```cargo run```
+```cd app && cargo run```
 
 You'll have to have `rustup` installed already.  Instructions [here](https://www.rust-lang.org/learn/get-started).
 
@@ -25,7 +25,7 @@ You'll have to have `rustup` installed already.  Instructions [here](https://www
 ### In Codespaces
 Everything is automatically set up! Just run:
 ```bash
-python test.py
+python pybevy/test.py
 ```
 
 ### Local Setup
@@ -38,7 +38,10 @@ maturin develop --release  # Rebuild pybevy
 ```
 
 To test if the exported `pybevy` python library is accessible, you can run:
-```python test.py```
+```python pybevy/test.py```
+
+Or also by launching and re-running the code in demo notebook:
+```jupyter notebook demo.ipynb```
 
 And look at time-series outputs for different longitudinal challenge scenarios like below:
 
