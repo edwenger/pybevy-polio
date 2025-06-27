@@ -8,7 +8,9 @@ A demonstration project to experiment with a few different concepts:
 ## Quick Start
 
 ### Option 1: GitHub Codespaces (Recommended)
-Click the "Open in GitHub Codespaces" badge above for a zero-setup development environment.
+Click the "Open in GitHub Codespaces" badge above for pre-configured development environment.
+- see [setup.sh](.devcontainer/setup.sh) for details
+- see [demo.ipynb](demo.ipynb) for a demo notebook using the exported python package
 
 ### Option 2: Local Development
 To launch the interactive demo yourself, run the following from the commandline:
@@ -32,8 +34,7 @@ To build the exported Python package, run maturin from within a new venv:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e .[full]  # Install with all dependencies
-maturin develop --release
+maturin develop --release  # Rebuild pybevy
 ```
 
 To test if the exported `pybevy` python library is accessible, you can run:

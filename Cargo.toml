@@ -6,23 +6,32 @@ edition = "2021"
 [lib]
 name = "pybevy"
 path = "src/lib.rs"
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
 
 [[bin]]
 name = "app"
 path = "src/app.rs"
+required-features = ["bevy_default"]
 
 [dependencies]
-bevy = { version = "0.13" }
+bevy = { version = "0.13", default-features = false}
 bevy_egui = "0.27"
 rand = "0.9"
 rand_distr = "0.5.1"
-numpy = "0.21"
-ndarray = "0.15"
 log = "0.4"
 env_logger = "0.11"
 
+# Python dependencies for the library
+numpy = "0.21"
+ndarray = "0.15"
+
+[features]
+default = [] # No default features for the library
+
+# Feature for enabling Bevy default-features in the binary (but not the lib)
+bevy_default = ["bevy/default"]
+
 [dependencies.pyo3]
 version = "0.21"
-# "abi3-py38" tells pyo3 (and maturin) to build using the stable ABI with minimum Python version 3.8
-features = ["abi3-py38"]
+features = ["extension-module"]
+
