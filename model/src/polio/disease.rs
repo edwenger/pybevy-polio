@@ -6,13 +6,35 @@ use log::{info, debug, error};
 use crate::core::{SimulationTime, Host};
 use super::params::*;
 
+#[cfg(feature = "pyo3")]
+use pyo3::prelude::*;
+
+#[cfg(not(feature = "pyo3"))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum InfectionStrain {
     WPV,
     OPV,
 }
 
+#[cfg(not(feature = "pyo3"))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum InfectionSerotype {
+    Type1,
+    Type2,
+    Type3,
+}
+
+#[cfg(feature = "pyo3")]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[pyclass]
+pub enum InfectionStrain {
+    WPV,
+    OPV,
+}
+
+#[cfg(feature = "pyo3")]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[pyclass]
 pub enum InfectionSerotype {
     Type1,
     Type2,
@@ -43,11 +65,26 @@ pub fn parse_infection_type(s: &str) -> Option<(InfectionStrain, InfectionSeroty
     }
 }
 
+#[cfg(not(feature = "pyo3"))]
 #[derive(Component)]
 pub struct Immunity {
     pub prechallenge_immunity: f32,
     pub postchallenge_peak_immunity: f32,
     pub current_immunity: f32,
+    pub ti_infected: Option<f32>,
+}
+
+#[cfg(feature = "pyo3")]
+#[derive(Component)]
+#[pyclass]
+pub struct Immunity {
+    #[pyo3(get, set)]
+    pub prechallenge_immunity: f32,
+    #[pyo3(get, set)]
+    pub postchallenge_peak_immunity: f32,
+    #[pyo3(get, set)]
+    pub current_immunity: f32,
+    #[pyo3(get, set)]
     pub ti_infected: Option<f32>,
 }
 
@@ -76,11 +113,50 @@ impl Immunity {
     }
 }
 
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl Immunity {
+    #[new]
+    pub fn new() -> Self {
+        Immunity::default()
+    }
+    
+    #[staticmethod]
+    pub fn with_values(
+        prechallenge_immunity: f32,
+        postchallenge_peak_immunity: f32,
+        current_immunity: f32,
+        ti_infected: Option<f32>,
+    ) -> Self {
+        Immunity {
+            prechallenge_immunity,
+            postchallenge_peak_immunity,
+            current_immunity,
+            ti_infected,
+        }
+    }
+}
+
+#[cfg(not(feature = "pyo3"))]
 #[derive(Component)]
 pub struct Infection {
     pub shed_duration: f32,
     pub viral_shedding: f32,
     pub strain: InfectionStrain,
+    pub serotype: InfectionSerotype,
+}
+
+#[cfg(feature = "pyo3")]
+#[derive(Component)]
+#[pyclass]
+pub struct Infection {
+    #[pyo3(get, set)]
+    pub shed_duration: f32,
+    #[pyo3(get, set)]
+    pub viral_shedding: f32,
+    #[pyo3(get, set)]
+    pub strain: InfectionStrain,
+    #[pyo3(get, set)]
     pub serotype: InfectionSerotype,
 }
 
@@ -98,6 +174,25 @@ impl Infection {
         Infection {
             shed_duration,
             viral_shedding: 0.0,
+            strain,
+            serotype,
+        }
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl Infection {
+    #[new]
+    pub fn new(
+        shed_duration: f32,
+        viral_shedding: f32,
+        strain: InfectionStrain,
+        serotype: InfectionSerotype,
+    ) -> Self {
+        Infection {
+            shed_duration,
+            viral_shedding,
             strain,
             serotype,
         }
