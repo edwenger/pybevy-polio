@@ -199,7 +199,8 @@ impl Infection {
     }
 }
 
-fn update_shed_duration(immunity: &Immunity, shed_duration_params: &ShedDurationParams) -> f32 {
+#[cfg_attr(feature = "pyo3", pyfunction)]
+pub fn update_shed_duration(immunity: &Immunity, shed_duration_params: &ShedDurationParams) -> f32 {
     let u = shed_duration_params.u;
     let delta = shed_duration_params.delta;
     let sigma = shed_duration_params.sigma;
@@ -211,6 +212,7 @@ fn update_shed_duration(immunity: &Immunity, shed_duration_params: &ShedDuration
     shed_duration
 }
 
+#[cfg_attr(feature = "pyo3", pyfunction)]
 pub fn calculate_immunity_waning(
     peak_immunity: f32,
     days_since_infection: f32,
@@ -219,10 +221,12 @@ pub fn calculate_immunity_waning(
     (peak_immunity * ((days_since_infection / 30.0).powf(-waning_rate))).max(1.0)
 }
 
+#[cfg_attr(feature = "pyo3", pyfunction)]
 pub fn should_clear_infection(days_since_infection: f32, shed_duration: f32) -> bool {
     days_since_infection > shed_duration
 }
 
+#[cfg_attr(feature = "pyo3", pyfunction)]
 pub fn calculate_viral_shedding(
     immunity: &Immunity,
     age_in_months: f32,
@@ -289,6 +293,7 @@ fn update_log10_peak_cid50(immunity: &Immunity, age_in_months: f32, peak_cid50_p
     peak_cid50_naive * (1.0 - k * (immunity.prechallenge_immunity).log2())
 }
 
+#[cfg_attr(feature = "pyo3", pyfunction)]
 pub fn calculate_infection_probability(
     current_immunity: f32,
     dose: f32,

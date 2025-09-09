@@ -134,5 +134,12 @@ fn pybevy(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<polio::ProbTransmitParams>()?;
     m.add_class::<polio::StrainParams>()?;
     
+    // Pure calculation functions
+    m.add_function(wrap_pyfunction!(polio::calculate_immunity_waning, m)?)?;
+    m.add_function(wrap_pyfunction!(polio::should_clear_infection, m)?)?;
+    m.add_function(wrap_pyfunction!(polio::calculate_viral_shedding, m)?)?;
+    m.add_function(wrap_pyfunction!(polio::calculate_infection_probability, m)?)?;
+    m.add_function(wrap_pyfunction!(polio::update_shed_duration, m)?)?;
+    
     Ok(())
 }

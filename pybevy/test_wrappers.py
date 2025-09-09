@@ -150,10 +150,50 @@ def test_params_classes():
     
     print("✅ Parameter classes test passed!")
 
+def test_pure_functions():
+    """Test the pure calculation functions"""
+    print("\nTesting pure calculation functions...")
+    
+    # Set up test data
+    immunity = pybevy.Immunity.with_values(2.0, 8.0, 4.0, 10.0)
+    viral_shedding_params = pybevy.ViralSheddingParams()
+    peak_cid50_params = pybevy.PeakCid50Params()
+    shed_duration_params = pybevy.ShedDurationParams()
+    
+    # Test calculate_immunity_waning
+    waning_result = pybevy.calculate_immunity_waning(8.0, 45.0, 0.87)
+    print(f"calculate_immunity_waning(8.0, 45.0, 0.87) = {waning_result}")
+    
+    # Test should_clear_infection
+    should_clear = pybevy.should_clear_infection(45.0, 30.0)
+    print(f"should_clear_infection(45.0, 30.0) = {should_clear}")
+    
+    should_not_clear = pybevy.should_clear_infection(20.0, 30.0)
+    print(f"should_clear_infection(20.0, 30.0) = {should_not_clear}")
+    
+    # Test calculate_viral_shedding
+    viral_shedding = pybevy.calculate_viral_shedding(
+        immunity, 24.0, 7.0, viral_shedding_params, peak_cid50_params
+    )
+    print(f"calculate_viral_shedding(...) = {viral_shedding}")
+    
+    # Test calculate_infection_probability
+    infection_prob = pybevy.calculate_infection_probability(
+        4.0, 1000.0, 2.3, 0.44, 0.46, 1.0
+    )
+    print(f"calculate_infection_probability(4.0, 1000.0, 2.3, 0.44, 0.46, 1.0) = {infection_prob}")
+    
+    # Test update_shed_duration
+    shed_duration = pybevy.update_shed_duration(immunity, shed_duration_params)
+    print(f"update_shed_duration(...) = {shed_duration}")
+    
+    print("✅ Pure functions test passed!")
+
 if __name__ == "__main__":
     test_host_class()
     test_immunity_class()
     test_infection_class()
     test_params_classes()
-    print("\n🎉 All PyO3 class bindings working correctly!")
+    test_pure_functions()
+    print("\n🎉 All PyO3 bindings working correctly!")
     print("Ready for granular Python/R access to polio disease model!")
