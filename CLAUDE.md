@@ -4,19 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a hybrid Rust/Python project implementing a polio within-host disease model using the Bevy game engine for interactive visualization and PyO3 for Python bindings. The project demonstrates real-time epidemiological simulation with visual feedback and provides Python bindings for data analysis.
+This is a hybrid Rust/Python/R project implementing a polio within-host disease model using the Bevy game engine for interactive visualization and PyO3 for Python bindings with R integration via reticulate. The project demonstrates real-time epidemiological simulation with visual feedback and provides comprehensive three-layer API access for detailed analysis.
 
 ## Core Architecture
 
 ### Project Structure
-- **`model/`**: Shared Rust crate containing core disease logic
+- **`model/`**: Shared Rust crate containing core disease logic with conditional PyO3 bindings
 - **`app/`**: Interactive Bevy application for visualization
-- **`src/`**: PyO3 bindings for Python export
-- **`pybevy/`**: Python package output directory
+- **`src/`**: PyO3 bindings for Python export with three-layer API
+- **`pybevy/`**: Python package output directory with test suites
+- **`R/`**: R integration examples and setup guide via reticulate
 
-### Dual Runtime System
+### Multi-Runtime System
 - **Interactive App** (`app/src/main.rs`): Bevy-based visual simulation with real-time controls and egui UI
 - **Python Export** (`src/lib.rs`): Headless simulation for data analysis via PyO3
+- **R Integration** (`R/demo.R`): Full API access via reticulate for epidemiological analysis
+
+### Three-Layer API Architecture
+- **Parameter Layer**: Direct access to disease parameters with getter/setter properties (8 parameter classes)
+- **State Layer**: Individual component manipulation (`Host`, `Immunity`, `Infection`) with direct state access
+- **Function Layer**: Pure calculation functions extracted from ECS systems (5 core functions)
 
 ### Entity-Component System (Bevy ECS)
 - **Host Component** (`model/src/core.rs`): Individual disease hosts with birth timing
@@ -54,11 +61,26 @@ maturin develop --release
 # Test Python bindings
 python pybevy/test.py
 
+# Test PyO3 class and function bindings
+python pybevy/test_wrappers.py
+
 # Enable debug logging for Python
 RUST_LOG=info python pybevy/test.py
 
 # Run Jupyter demo notebook
 jupyter notebook demo.ipynb
+```
+
+### R Integration Development
+```bash
+# Install required R packages (first time)
+Rscript -e "install.packages(c('reticulate', 'ggplot2', 'dplyr', 'tidyr'))"
+
+# Run comprehensive R integration example
+Rscript R/demo.R
+
+# Interactive R development in RStudio
+# Open R/demo.R in RStudio and run sections interactively
 ```
 
 ### Build Commands
@@ -130,12 +152,19 @@ cd app && trunk serve
 
 ## Key Integration Points
 
-### PyO3 Export Function
+### PyO3 Export Functions
+
+#### High-Level Simulation
 The `run_bevy_app()` function in `src/lib.rs` accepts Python dictionary parameters and returns NumPy arrays. Required parameters:
 - `n_hosts`: Number of simulated individuals
 - `max_days`: Simulation duration
 - `incidence_rate`: Daily infection probability (0.0-1.0)
 - `log10_dose`: Log10 of infectious challenge dose (typically 4.0-8.0)
+
+#### Three-Layer API Access
+- **Parameter Classes**: `Params`, `ImmunityWaningParams`, `ThetaNabsParams`, `ShedDurationParams`, `ViralSheddingParams`, `PeakCid50Params`, `ProbTransmitParams`, `StrainParams`
+- **State Classes**: `Host`, `Immunity`, `Infection`, `InfectionStrain`, `InfectionSerotype`
+- **Pure Functions**: `calculate_immunity_waning`, `calculate_infection_probability`, `calculate_viral_shedding`, `should_clear_infection`, `update_shed_duration`
 
 ### Data Output Format
 Returns 3D NumPy array: `[host_index, day, metric]` where metrics are:
@@ -167,7 +196,13 @@ The Bevy app (`app/src/main.rs`) provides:
 
 ## Testing and Validation
 
-Use `pybevy/test.py` to validate Python bindings - generates time series plots and heatmaps showing immunity and viral shedding patterns across multiple hosts over time. The test script demonstrates typical usage patterns for batch simulation runs.
+### Python Testing
+- `pybevy/test.py`: High-level simulation validation - generates time series plots and heatmaps showing immunity and viral shedding patterns across multiple hosts over time
+- `pybevy/test_wrappers.py`: Comprehensive testing of all PyO3 class and function bindings
+
+### R Integration Testing  
+- `R/demo.R`: Comprehensive R integration example demonstrating all three API layers
+- Includes parameter exploration, individual host management, dose-response analysis, and population-level simulation
 
 ## File Organization
 

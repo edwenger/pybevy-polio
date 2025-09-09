@@ -4,6 +4,7 @@ A demonstration project to experiment with a few different concepts:
 - porting polio within-host logic into Rust for use with [Bevy](https://bevy.org/) gaming engine (related to previous Python code implementations in [StarSim](https://github.com/edwenger/starsim-bokeh-demo/blob/main/polio.py), [poliosim](https://github.com/amath-idm/poliosim), and [multiscale](https://github.com/InstituteforDiseaseModeling/MultiscaleModeling/blob/main/PopSim/Assets/Infection.py) models)
 - experimenting with interactive visualizations for debugging and building intuition about model logic behavior (related to similar effort on [malaria coinfection](https://github.com/edwenger/bevy_coinfection_demo/tree/main))
 - exporting Rust functions and modules to Python package with [PyO3](https://pyo3.rs/) and [maturin](https://www.maturin.rs/tutorial.html) (for further integration in tutorial notebooks, calibration workflows, etc.)
+- providing R integration via reticulate for epidemiological analysis workflows
 
 ## Quick Start
 
@@ -49,6 +50,19 @@ To test if the exported `pybevy` python library is accessible, you can run:
 
 Or also by launching and re-running the code in demo notebook:
 ```jupyter notebook demo.ipynb```
+
+## R Integration
+
+To run the R integration example:
+```bash
+# Install R dependencies (first time)
+Rscript -e "install.packages(c('reticulate', 'ggplot2', 'dplyr', 'tidyr'))"
+
+# Run comprehensive R example  
+Rscript R/demo.R
+```
+
+See `R/README.md` for complete setup guide and troubleshooting.
 
 And look at time-series outputs for different longitudinal challenge scenarios like below:
 
