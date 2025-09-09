@@ -18,17 +18,9 @@ impl Default for SimulationTime {
     }
 }
 
-#[cfg(not(feature = "pyo3"))]
 #[derive(Component)]
+#[cfg_attr(feature = "pyo3", pyclass(get_all, set_all))]
 pub struct Host {
-    pub birth_sim_day: f32,
-}
-
-#[cfg(feature = "pyo3")]
-#[derive(Component)]
-#[pyclass]
-pub struct Host {
-    #[pyo3(get, set)]
     pub birth_sim_day: f32,
 }
 

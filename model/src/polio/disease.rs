@@ -9,32 +9,15 @@ use super::params::*;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 
-#[cfg(not(feature = "pyo3"))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "pyo3", pyclass)]
 pub enum InfectionStrain {
     WPV,
     OPV,
 }
 
-#[cfg(not(feature = "pyo3"))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum InfectionSerotype {
-    Type1,
-    Type2,
-    Type3,
-}
-
-#[cfg(feature = "pyo3")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[pyclass]
-pub enum InfectionStrain {
-    WPV,
-    OPV,
-}
-
-#[cfg(feature = "pyo3")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 pub enum InfectionSerotype {
     Type1,
     Type2,
@@ -65,26 +48,12 @@ pub fn parse_infection_type(s: &str) -> Option<(InfectionStrain, InfectionSeroty
     }
 }
 
-#[cfg(not(feature = "pyo3"))]
 #[derive(Component)]
+#[cfg_attr(feature = "pyo3", pyclass(get_all, set_all))]
 pub struct Immunity {
     pub prechallenge_immunity: f32,
     pub postchallenge_peak_immunity: f32,
     pub current_immunity: f32,
-    pub ti_infected: Option<f32>,
-}
-
-#[cfg(feature = "pyo3")]
-#[derive(Component)]
-#[pyclass]
-pub struct Immunity {
-    #[pyo3(get, set)]
-    pub prechallenge_immunity: f32,
-    #[pyo3(get, set)]
-    pub postchallenge_peak_immunity: f32,
-    #[pyo3(get, set)]
-    pub current_immunity: f32,
-    #[pyo3(get, set)]
     pub ti_infected: Option<f32>,
 }
 
@@ -137,26 +106,12 @@ impl Immunity {
     }
 }
 
-#[cfg(not(feature = "pyo3"))]
 #[derive(Component)]
+#[cfg_attr(feature = "pyo3", pyclass(get_all, set_all))]
 pub struct Infection {
     pub shed_duration: f32,
     pub viral_shedding: f32,
     pub strain: InfectionStrain,
-    pub serotype: InfectionSerotype,
-}
-
-#[cfg(feature = "pyo3")]
-#[derive(Component)]
-#[pyclass]
-pub struct Infection {
-    #[pyo3(get, set)]
-    pub shed_duration: f32,
-    #[pyo3(get, set)]
-    pub viral_shedding: f32,
-    #[pyo3(get, set)]
-    pub strain: InfectionStrain,
-    #[pyo3(get, set)]
     pub serotype: InfectionSerotype,
 }
 
