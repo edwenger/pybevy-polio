@@ -7,6 +7,8 @@ use super::disease::{InfectionStrain, InfectionSerotype};
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 
+// TODO: we probably want to export all the polio::Params as nested dict-like?
+
 #[derive(Resource)]
 #[cfg_attr(feature = "pyo3", pyclass(get_all, set_all))]
 pub struct Params {

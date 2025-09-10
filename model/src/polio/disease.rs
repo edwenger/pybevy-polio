@@ -9,6 +9,8 @@ use super::params::*;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 
+// TODO: is pyclass(eq, eq_int) needed for correct comparability in Python layer?
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 pub enum InfectionStrain {
@@ -68,6 +70,8 @@ impl Default for Immunity {
     }
 }
 
+#[cfg(feature = "pyo3")]
+#[pymethods]
 impl Immunity {
     pub fn update_peak_immunity(&mut self, theta_nabs: &ThetaNabsParams) {
         self.prechallenge_immunity = self.current_immunity;
@@ -80,11 +84,7 @@ impl Immunity {
         self.current_immunity = self.postchallenge_peak_immunity.max(1.0);
         info!("  Updated current immunity: {}", self.current_immunity);
     }
-}
 
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl Immunity {
     #[new]
     pub fn new() -> Self {
         Immunity::default()
