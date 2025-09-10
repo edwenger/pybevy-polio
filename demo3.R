@@ -26,10 +26,7 @@ for (host in 1:n_hosts) {
         # cat(sprintf("Pre/Post Challenge Immunity: ( %.2f, %.2f )\n", immunity$prechallenge_immunity, immunity$current_immunity))
 
         # Wane immunity
-        immunity$current_immunity = pb$calculate_immunity_waning(
-                    immunity$postchallenge_peak_immunity,
-                    t_since_last_exposure,
-                    immunity_waning$rate)
+        immunity$calculate_waning(t_since_last_exposure, immunity_waning)
     }
 }
 

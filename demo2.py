@@ -20,11 +20,8 @@ for _ in range(n_hosts):
         # Plot pre- and post-boost Nabs
         ax.scatter(immunity.prechallenge_immunity, immunity.current_immunity)
 
-        # Wane immunity between infections (TODO: refactor as instance method Immunity.calculate_waned_immunity(t_since_exposure, immunity_waning))
-        immunity.current_immunity = pb.calculate_immunity_waning(
-            immunity.postchallenge_peak_immunity,
-            t_since_last_exposure,
-            immunity_waning.rate)
+        # Wane immunity between infections
+        immunity.calculate_waning(t_since_last_exposure, immunity_waning)
 
 ax.set_xscale('log', base=2)
 ax.set_yscale('log', base=2)

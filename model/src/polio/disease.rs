@@ -85,6 +85,12 @@ impl Immunity {
         info!("  Updated current immunity: {}", self.current_immunity);
     }
 
+    pub fn calculate_waning(&mut self, t_since_last_exposure: f32, immunity_waning: &ImmunityWaningParams) {
+            if t_since_last_exposure >= 30.0 {
+                self.current_immunity = (self.postchallenge_peak_immunity * ((t_since_last_exposure / 30.0).powf(-immunity_waning.rate))).max(1.0);
+            }
+    }
+
     #[new]
     pub fn new() -> Self {
         Immunity::default()
@@ -168,15 +174,6 @@ pub fn update_shed_duration(immunity: &Immunity, shed_duration_params: &ShedDura
 }
 
 #[cfg_attr(feature = "pyo3", pyfunction)]
-pub fn calculate_immunity_waning(
-    peak_immunity: f32,
-    days_since_infection: f32,
-    waning_rate: f32,
-) -> f32 {
-    (peak_immunity * ((days_since_infection / 30.0).powf(-waning_rate))).max(1.0)
-}
-
-#[cfg_attr(feature = "pyo3", pyfunction)]
 pub fn should_clear_infection(days_since_infection: f32, shed_duration: f32) -> bool {
     days_since_infection > shed_duration
 }
@@ -208,14 +205,12 @@ pub fn step_state(
     for (entity, host, mut immunity, infection) in query.iter_mut() {
         if let Some(ti_infected) = immunity.ti_infected {
             let t_since_last_exposure = sim_time.day as f32 - ti_infected;
-            if t_since_last_exposure >= 30.0 {
-                immunity.current_immunity = calculate_immunity_waning(
-                    immunity.postchallenge_peak_immunity,
-                    t_since_last_exposure,
-                    params.immunity_waning.rate,
-                );
-            }
+
+            immunity.calculate_waning(t_since_last_exposure, &params.immunity_waning);
+
             if let Some(mut inf) = infection {
+                
+                // TODO: move should_clear_infection and calculate_viral_shedding into methods on Infection 
                 if should_clear_infection(t_since_last_exposure, inf.shed_duration) {
                     info!("Clearing infection for host {:?} at day {}", entity, sim_time.day);
                     commands.entity(entity).remove::<Infection>();

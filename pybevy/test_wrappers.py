@@ -159,10 +159,12 @@ def test_pure_functions():
     viral_shedding_params = pybevy.ViralSheddingParams()
     peak_cid50_params = pybevy.PeakCid50Params()
     shed_duration_params = pybevy.ShedDurationParams()
+    immunity_waning_params = pybevy.ImmunityWaningParams()
     
     # Test calculate_immunity_waning
-    waning_result = pybevy.calculate_immunity_waning(8.0, 45.0, 0.87)
-    print(f"calculate_immunity_waning(8.0, 45.0, 0.87) = {waning_result}")
+    immunity.calculate_waning(45.0, immunity_waning_params)
+    waning_result = immunity.current_immunity
+    print(f"immunity.calculate_waning(45.0, immunity_waning_params) = {waning_result}")
     
     # Test should_clear_infection
     should_clear = pybevy.should_clear_infection(45.0, 30.0)
