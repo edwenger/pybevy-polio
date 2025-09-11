@@ -35,6 +35,7 @@ impl InfectionSerotype {
     }
 }
 
+#[cfg_attr(feature = "pyo3", pyfunction)]
 pub fn parse_infection_type(s: &str) -> Option<(InfectionStrain, InfectionSerotype)> {
     let s = s.to_ascii_uppercase();
     if s.starts_with("WPV") {

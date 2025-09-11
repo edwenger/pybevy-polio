@@ -1,3 +1,5 @@
+# Demo script for accessing low-level R API (via reticulate) to visualize behavior of disease model component logic
+
 library(reticulate)
 library(ggplot2) 
 
