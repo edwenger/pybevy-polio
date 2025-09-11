@@ -60,9 +60,26 @@ jobs:
         toolchain: stable
         override: true
     
+    - name: Install system dependencies for R packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libpng-dev libjpeg-dev libcurl4-openssl-dev libssl-dev libxml2-dev
+    
     - name: Install R dependencies
       run: |
-        Rscript -e "install.packages(c('reticulate', 'testthat'), repos='https://cran.rstudio.com/')"
+        Rscript -e "
+        options(repos = 'https://cran.rstudio.com/')
+        packages <- c('reticulate', 'testthat')
+        install.packages(packages, dependencies = TRUE)
+        
+        # Verify installation
+        for (pkg in packages) {
+          if (!require(pkg, character.only = TRUE, quietly = TRUE)) {
+            stop(paste('Failed to install package:', pkg))
+          }
+        }
+        cat('All R packages installed successfully\n')
+        "
     
     - name: Install Python dependencies and build extension
       run: |
