@@ -48,7 +48,7 @@ maturin develop --release  # Rebuild pybevy
 ```
 
 To test if the exported `pybevy` python library is accessible, you can run:
-```python pybevy/test.py```
+```python pybevy/demo.py```
 
 Or also by launching and re-running the code in demo notebook:
 ```jupyter notebook demo.ipynb```
@@ -79,5 +79,5 @@ RUST_LOG=info cargo run
 ```
 or 
 ```
-RUST_LOG=info python test.py
+RUST_LOG=info python demo.py
 ```
