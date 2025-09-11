@@ -133,6 +133,8 @@ fn pybevy(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<polio::PeakCid50Params>()?;
     m.add_class::<polio::ProbTransmitParams>()?;
     m.add_class::<polio::StrainParams>()?;
+
+    m.add_function(wrap_pyfunction!(polio::parse_infection_type, m)?)?;
     
     Ok(())
 }
