@@ -1,4 +1,6 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/edwenger/pybevy-polio)
+[![Tests](https://github.com/edwenger/pybevy-polio/actions/workflows/tests.yml/badge.svg)](https://github.com/edwenger/pybevy-polio/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/edwenger/pybevy-polio/branch/main/graph/badge.svg)](https://codecov.io/gh/edwenger/pybevy-polio)
 
 A demonstration project to experiment with a few different concepts:
 - porting polio within-host logic into Rust for use with [Bevy](https://bevy.org/) gaming engine (related to previous Python code implementations in [StarSim](https://github.com/edwenger/starsim-bokeh-demo/blob/main/polio.py), [poliosim](https://github.com/amath-idm/poliosim), and [multiscale](https://github.com/InstituteforDiseaseModeling/MultiscaleModeling/blob/main/PopSim/Assets/Infection.py) models)
@@ -51,6 +53,11 @@ To test if the exported `pybevy` python library is accessible, you can run:
 Or also by launching and re-running the code in demo notebook:
 ```jupyter notebook demo.ipynb```
 
+And look at time-series outputs for different longitudinal challenge scenarios like below:
+
+![Time series of successive infectious challenge dosing](figs/pybevy-polio-challenge-timeseries.png)
+![Heat maps of successive infectious challenge dosing](figs/pybevy-polio-challenge-heatmap.png)
+
 ## R Integration
 
 To run the R integration example:
@@ -64,10 +71,7 @@ Rscript R/demo.R
 
 See `R/README.md` for complete setup guide and troubleshooting.
 
-And look at time-series outputs for different longitudinal challenge scenarios like below:
-
-![Time series of successive infectious challenge dosing](figs/pybevy-polio-challenge-timeseries.png)
-![Heat maps of successive infectious challenge dosing](figs/pybevy-polio-challenge-heatmap.png)
+## Debug Logging
 
 To enable info-level logging, one can set environment variable like this:
 ```

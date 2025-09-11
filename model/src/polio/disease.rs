@@ -9,8 +9,6 @@ use super::params::*;
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 
-// TODO: is pyclass(eq, eq_int) needed for correct comparability in Python layer?
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "pyo3", pyclass)]
 pub enum InfectionStrain {

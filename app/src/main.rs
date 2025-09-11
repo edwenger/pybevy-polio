@@ -257,7 +257,7 @@ fn remove_shedding_scales(
 
 // App entry point
 fn main() {
-    env_logger::init();
+    env_logger::try_init().ok(); // Ignore error if already initialized
 
     App::new()
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))

@@ -40,7 +40,7 @@ fn run_bevy_app<'py>(py: Python<'py>, data: &Bound<'py, PyDict>) -> PyResult<Bou
     };
     let output_data_clone = output_data.clone();
 
-    env_logger::init();
+    env_logger::try_init().ok(); // Ignore error if already initialized
 
     App::new()
         .add_plugins(MinimalPlugins)
