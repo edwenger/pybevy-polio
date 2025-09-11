@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
 use log::{info, debug};
+use bevy::log::LogPlugin;
 
 use model::{SimulationTime, Host, polio};
 
@@ -257,7 +258,7 @@ fn remove_shedding_scales(
 
 // App entry point
 fn main() {
-    env_logger::init();
+    env_logger::try_init().ok(); // Ignore error if already initialized
 
     App::new()
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
@@ -265,7 +266,7 @@ fn main() {
         .insert_resource(SimulationTime::default())
         .insert_resource(SimulationSpeed::default())
         .insert_resource(polio::Params::default())
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.build().disable::<LogPlugin>())
         .add_plugins(EguiPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, (

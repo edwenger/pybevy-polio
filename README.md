@@ -1,9 +1,12 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/edwenger/pybevy-polio)
+[![Tests](https://github.com/edwenger/pybevy-polio/actions/workflows/tests.yml/badge.svg)](https://github.com/edwenger/pybevy-polio/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/edwenger/pybevy-polio/branch/main/graph/badge.svg)](https://codecov.io/gh/edwenger/pybevy-polio)
 
 A demonstration project to experiment with a few different concepts:
 - porting polio within-host logic into Rust for use with [Bevy](https://bevy.org/) gaming engine (related to previous Python code implementations in [StarSim](https://github.com/edwenger/starsim-bokeh-demo/blob/main/polio.py), [poliosim](https://github.com/amath-idm/poliosim), and [multiscale](https://github.com/InstituteforDiseaseModeling/MultiscaleModeling/blob/main/PopSim/Assets/Infection.py) models)
 - experimenting with interactive visualizations for debugging and building intuition about model logic behavior (related to similar effort on [malaria coinfection](https://github.com/edwenger/bevy_coinfection_demo/tree/main))
 - exporting Rust functions and modules to Python package with [PyO3](https://pyo3.rs/) and [maturin](https://www.maturin.rs/tutorial.html) (for further integration in tutorial notebooks, calibration workflows, etc.)
+- providing R integration via reticulate for epidemiological analysis workflows
 
 ## Quick Start
 
@@ -45,7 +48,7 @@ maturin develop --release  # Rebuild pybevy
 ```
 
 To test if the exported `pybevy` python library is accessible, you can run:
-```python pybevy/test.py```
+```python pybevy/demo.py```
 
 Or also by launching and re-running the code in demo notebook:
 ```jupyter notebook demo.ipynb```
@@ -55,11 +58,26 @@ And look at time-series outputs for different longitudinal challenge scenarios l
 ![Time series of successive infectious challenge dosing](figs/pybevy-polio-challenge-timeseries.png)
 ![Heat maps of successive infectious challenge dosing](figs/pybevy-polio-challenge-heatmap.png)
 
+## R Integration
+
+To run the R integration example:
+```bash
+# Install R dependencies (first time)
+Rscript -e "install.packages(c('reticulate', 'ggplot2', 'dplyr', 'tidyr'))"
+
+# Run comprehensive R example  
+Rscript R/demo.R
+```
+
+See `R/README.md` for complete setup guide and troubleshooting.
+
+## Debug Logging
+
 To enable info-level logging, one can set environment variable like this:
 ```
 RUST_LOG=info cargo run
 ```
 or 
 ```
-RUST_LOG=info python test.py
+RUST_LOG=info python demo.py
 ```

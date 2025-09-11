@@ -40,7 +40,7 @@ fn run_bevy_app<'py>(py: Python<'py>, data: &Bound<'py, PyDict>) -> PyResult<Bou
     };
     let output_data_clone = output_data.clone();
 
-    env_logger::init();
+    env_logger::try_init().ok(); // Ignore error if already initialized
 
     App::new()
         .add_plugins(MinimalPlugins)
@@ -114,5 +114,25 @@ fn step_loop(
 #[pymodule]
 fn pybevy(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(run_bevy_app, m)?)?;
+    
+    // Core classes
+    m.add_class::<Host>()?;
+    
+    // Polio disease classes
+    m.add_class::<polio::Immunity>()?;
+    m.add_class::<polio::Infection>()?;
+    m.add_class::<polio::InfectionStrain>()?;
+    m.add_class::<polio::InfectionSerotype>()?;
+    
+    // Parameter classes
+    m.add_class::<polio::Params>()?;
+    m.add_class::<polio::ImmunityWaningParams>()?;
+    m.add_class::<polio::ThetaNabsParams>()?;
+    m.add_class::<polio::ShedDurationParams>()?;
+    m.add_class::<polio::ViralSheddingParams>()?;
+    m.add_class::<polio::PeakCid50Params>()?;
+    m.add_class::<polio::ProbTransmitParams>()?;
+    m.add_class::<polio::StrainParams>()?;
+    
     Ok(())
 }

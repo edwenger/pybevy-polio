@@ -5,4 +5,5 @@ Cargo.lock
 *.so
 __pycache__
 *.pyc
-
+.Rhistory
+.DS_Store
