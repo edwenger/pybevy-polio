@@ -35,7 +35,9 @@ jobs:
         pip install maturin pytest numpy
     
     - name: Build PyO3 extension
-      run: maturin develop --release
+      run: |
+        maturin build --release
+        pip install target/wheels/*.whl
     
     - name: Run Python tests
       run: python -m pytest tests/ -v --tb=short
@@ -73,7 +75,9 @@ jobs:
         pip install maturin numpy
     
     - name: Build PyO3 extension
-      run: maturin develop --release
+      run: |
+        maturin build --release
+        pip install target/wheels/*.whl
     
     - name: Run R tests
       run: Rscript tests/testthat.R
@@ -103,7 +107,9 @@ jobs:
         pip install maturin pytest pytest-cov numpy
     
     - name: Build PyO3 extension
-      run: maturin develop --release
+      run: |
+        maturin build --release
+        pip install target/wheels/*.whl
     
     - name: Run tests with coverage
       run: python -m pytest tests/ --cov=pybevy --cov-report=xml
