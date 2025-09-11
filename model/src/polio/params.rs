@@ -7,8 +7,6 @@ use super::disease::{InfectionStrain, InfectionSerotype};
 #[cfg(feature = "pyo3")]
 use pyo3::prelude::*;
 
-// TODO: we probably want to export all the polio::Params as nested dict-like?
-
 #[derive(Resource)]
 #[cfg_attr(feature = "pyo3", pyclass(get_all, set_all))]
 pub struct Params {
@@ -19,78 +17,6 @@ pub struct Params {
     pub p_transmit: ProbTransmitParams,
     // Note: HashMap is complex for PyO3, so we'll handle strain_params via methods
     pub strain_params: HashMap<(InfectionStrain, InfectionSerotype), StrainParams>,
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl ImmunityWaningParams {
-    #[new]
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl ThetaNabsParams {
-    #[new]
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl ShedDurationParams {
-    #[new]
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl ViralSheddingParams {
-    #[new]
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl PeakCid50Params {
-    #[new]
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl ProbTransmitParams {
-    #[new]
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl StrainParams {
-    #[new]
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-
-#[cfg(feature = "pyo3")]
-#[pymethods]
-impl Params {
-    #[new]
-    pub fn new() -> Self {
-        Self::default()
-    }
 }
 
 impl Default for Params {
@@ -233,5 +159,77 @@ impl Default for StrainParams {
             strain_take_modifier: 1.0, 
             shed_duration: ShedDurationParams::default()
         }
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl ImmunityWaningParams {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl ThetaNabsParams {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl ShedDurationParams {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl ViralSheddingParams {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl PeakCid50Params {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl ProbTransmitParams {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl StrainParams {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[cfg(feature = "pyo3")]
+#[pymethods]
+impl Params {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
     }
 }

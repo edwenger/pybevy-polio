@@ -61,6 +61,9 @@ cat(sprintf("Immunity waning rate: %.2f\n", immunity_params$rate))
 cat(sprintf("Transmission alpha: %.2f, gamma: %.2f\n", p_transmit$alpha, p_transmit$gamma))
 cat(sprintf("Viral shedding eta: %.2f, v: %.2f\n", viral_shedding$eta, viral_shedding$v))
 
+immunity <- pb$Immunity()
+params <- pb$Params()
+
 # Modify parameters for sensitivity analysis
 cat("\n🔧 Parameter Sensitivity Analysis:\n")
 original_alpha <- p_transmit$alpha
@@ -70,16 +73,14 @@ sensitivity_results <- data.frame(
 )
 
 for (alpha_val in seq(0.2, 0.8, by = 0.1)) {
-  p_transmit$alpha <- alpha_val
+  params$p_transmit$alpha <- alpha_val
   
   # Test infection probability with standard inputs
-  prob <- pb$calculate_infection_probability(
-    current_immunity = 4.0,
+  prob <- immunity$calculate_infection_probability(
     dose = 1000.0,
-    sabin_scale = 2.3,
-    alpha = alpha_val,
-    gamma = 0.46,
-    take_modifier = 1.0
+    strain = pb$InfectionStrain$WPV,
+    serotype = pb$InfectionSerotype$Type2,
+    params = params
   )
   
   sensitivity_results <- rbind(sensitivity_results, 
@@ -189,14 +190,13 @@ dose_response_data <- expand.grid(
   stringsAsFactors = FALSE
 )
 
-dose_response_data$infection_prob <- mapply(function(dose, immunity) {
-  pb$calculate_infection_probability(
-    current_immunity = immunity,
+dose_response_data$infection_prob <- mapply(function(dose, immunity_level) {
+  immunity$current_immunity <- immunity_level
+  immunity$calculate_infection_probability(
     dose = dose,
-    sabin_scale = 2.3,
-    alpha = p_transmit$alpha,
-    gamma = p_transmit$gamma,
-    take_modifier = 1.0
+    strain = pb$InfectionStrain$WPV,
+    serotype = pb$InfectionSerotype$Type2,
+    params = params
   )
 }, dose_response_data$dose, dose_response_data$immunity)
 
@@ -263,13 +263,11 @@ for (day in 1:min(sim_days, 30)) {  # Limit to 30 days for demo
     immunity <- pop_immunities[[i]]
     
     # Calculate infection probability
-    infection_prob <- pb$calculate_infection_probability(
-      current_immunity = immunity$current_immunity,
+    infection_prob <- immunity$calculate_infection_probability(
       dose = daily_dose,
-      sabin_scale = 2.3,
-      alpha = p_transmit$alpha,
-      gamma = p_transmit$gamma,
-      take_modifier = 1.0
+      strain = pb$InfectionStrain$WPV,
+      serotype = pb$InfectionSerotype$Type2,
+      params = params
     )
     
     # Stochastic infection event

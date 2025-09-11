@@ -156,8 +156,7 @@ def test_pure_functions():
     
     # Set up test data
     immunity = pybevy.Immunity.with_values(2.0, 8.0, 4.0, 10.0)
-    viral_shedding_params = pybevy.ViralSheddingParams()
-    peak_cid50_params = pybevy.PeakCid50Params()
+    params = pybevy.Params()
     shed_duration_params = pybevy.ShedDurationParams()
     immunity_waning_params = pybevy.ImmunityWaningParams()
     
@@ -166,27 +165,34 @@ def test_pure_functions():
     waning_result = immunity.current_immunity
     print(f"immunity.calculate_waning(45.0, immunity_waning_params) = {waning_result}")
     
+    infection = pybevy.Infection(
+        shed_duration=42.5,
+        viral_shedding=1000.0,
+        strain=pybevy.InfectionStrain.WPV,
+        serotype=pybevy.InfectionSerotype.Type2
+    )
+
     # Test should_clear_infection
-    should_clear = pybevy.should_clear_infection(45.0, 30.0)
-    print(f"should_clear_infection(45.0, 30.0) = {should_clear}")
-    
-    should_not_clear = pybevy.should_clear_infection(20.0, 30.0)
-    print(f"should_clear_infection(20.0, 30.0) = {should_not_clear}")
-    
+    should_clear = infection.should_clear_infection(45.0)
+    print(f"infection.should_clear_infection(45.0) = {should_clear}")
+
+    should_not_clear = infection.should_clear_infection(20.0)
+    print(f"infection.should_clear_infection(20.0) = {should_not_clear}")
+
     # Test calculate_viral_shedding
-    viral_shedding = pybevy.calculate_viral_shedding(
-        immunity, 24.0, 7.0, viral_shedding_params, peak_cid50_params
+    viral_shedding = immunity.calculate_viral_shedding(
+        24.0, 7.0, params
     )
     print(f"calculate_viral_shedding(...) = {viral_shedding}")
     
     # Test calculate_infection_probability
-    infection_prob = pybevy.calculate_infection_probability(
-        4.0, 1000.0, 2.3, 0.44, 0.46, 1.0
+    infection_prob = immunity.calculate_infection_probability(
+        1000.0, pybevy.InfectionStrain.WPV, pybevy.InfectionSerotype.Type2, params
     )
-    print(f"calculate_infection_probability(4.0, 1000.0, 2.3, 0.44, 0.46, 1.0) = {infection_prob}")
-    
+    print(f"calculate_infection_probability(1000.0, {pybevy.InfectionStrain.WPV}, {pybevy.InfectionSerotype.Type2}, params) = {infection_prob}")
+
     # Test update_shed_duration
-    shed_duration = pybevy.update_shed_duration(immunity, shed_duration_params)
+    shed_duration = immunity.calculate_shed_duration(shed_duration_params)
     print(f"update_shed_duration(...) = {shed_duration}")
     
     print("✅ Pure functions test passed!")

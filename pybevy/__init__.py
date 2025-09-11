@@ -15,9 +15,4 @@ from .pybevy import (
     Infection,
     InfectionStrain,
     InfectionSerotype,
-    # Pure calculation functions
-    calculate_infection_probability,
-    calculate_viral_shedding,
-    should_clear_infection,
-    update_shed_duration,
 )
