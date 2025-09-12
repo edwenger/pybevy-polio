@@ -71,6 +71,8 @@ Rscript R/demo.R
 
 See `R/README.md` for complete setup guide and troubleshooting.
 
+![Scatter of pre- and post-challenge antibody titers analyzed in RStudio](figs/pybevy-reticulate-RStudio-screenshot.png)
+
 ## Debug Logging
 
 To enable info-level logging, one can set environment variable like this:
