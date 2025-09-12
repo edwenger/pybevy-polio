@@ -32,7 +32,7 @@ for (host in 1:n_hosts) {
     }
 }
 
-if (!interactive()) pdf(NULL)
+# if (!interactive()) pdf(NULL)
 
 ggplot(plot_data, aes(x = x_val, y = y_val)) +
     geom_point() +
