@@ -71,14 +71,18 @@ impl Default for Immunity {
 
 #[cfg_attr(feature = "pyo3", pymethods)]
 impl Immunity {
-    pub fn update_peak_immunity(&mut self, theta_nabs: &ThetaNabsParams) {
-        self.prechallenge_immunity = self.current_immunity;
+    pub fn calculate_theta_nab(&self, theta_nabs: &ThetaNabsParams) -> f32 {
         let nabs = self.prechallenge_immunity;
         let mean = theta_nabs.a + theta_nabs.b * nabs.log2();
         let stdev = (theta_nabs.c + theta_nabs.d * nabs.log2()).max(0.0).sqrt();
         let normal_dist = Normal::new(mean, stdev).unwrap();
-        let theta_nabs = normal_dist.sample(&mut rand::rng()).exp();
-        self.postchallenge_peak_immunity = self.prechallenge_immunity * theta_nabs.max(1.0);
+        normal_dist.sample(&mut rand::rng()).exp()
+    }
+
+    pub fn update_peak_immunity(&mut self, theta_nabs: &ThetaNabsParams) {
+        self.prechallenge_immunity = self.current_immunity;
+        let theta_nabs_value = self.calculate_theta_nab(theta_nabs);
+        self.postchallenge_peak_immunity = self.prechallenge_immunity * theta_nabs_value.max(1.0);
         self.current_immunity = self.postchallenge_peak_immunity.max(1.0);
         info!("  Updated current immunity: {}", self.current_immunity);
     }
